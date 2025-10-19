@@ -85,7 +85,9 @@ mod tests {
 
     #[rstest]
     #[case(Character::Bryan, "One Two Low Kick", "1,2,3")]
+    #[case(Character::Bryan, "one two low kick", "1,2,3")]
     #[case(Character::Kazuya, "Flash Punch Combo", "1,1,2")]
+    #[case(Character::Kazuya, "flash punch combo", "1,1,2")]
     fn test_exact_name_match(#[case] character: Character, #[case] query: &str, #[case] id: &str) {
         let id_match = JaroMoveMatcher
             .match_by_name(character, query, &sample_moves())
