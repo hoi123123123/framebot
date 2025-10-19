@@ -1,0 +1,20 @@
+#[derive(Debug, PartialEq, Eq, Hash, Default, Clone)]
+pub struct CharacterMove {
+    pub id: String,
+    pub name: Option<String>,
+    pub input: Option<String>,
+    pub alias: Option<String>,
+    pub alt: Option<String>,
+    pub parent: Option<String>,
+    pub target: Option<String>,
+    pub damage: Option<String>,
+    pub reach: Option<String>,
+    pub startup_frames: Option<String>,
+    pub recovery_frames: Option<String>,
+    pub total_frames: Option<String>,
+    pub crush: Option<String>,
+    pub on_block: Option<String>,
+    pub on_hit: Option<String>,
+    pub on_counter_hit: Option<String>,
+    pub notes: Option<String>,
+}
