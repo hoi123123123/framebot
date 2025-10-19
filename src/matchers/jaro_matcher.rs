@@ -37,9 +37,15 @@ impl MoveMatcher for JaroMoveMatcher {
         query: &str,
         moves: &[CharacterMove],
     ) -> Option<CharacterMoveMatch> {
+        let full_query = query.to_ascii_lowercase();
+
         let matched_move = moves
             .iter()
-            .filter_map(|m| m.name.as_ref().map(|name| (jaro(name, query), m)))
+            .filter_map(|m| {
+                m.name
+                    .as_ref()
+                    .map(|name| (jaro(&name.to_ascii_lowercase(), &full_query), m))
+            })
             .max_by(|x, y| x.0.total_cmp(&y.0))?;
 
         Some(CharacterMoveMatch {
