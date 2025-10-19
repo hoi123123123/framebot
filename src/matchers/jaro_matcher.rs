@@ -49,3 +49,50 @@ impl MoveMatcher for JaroMoveMatcher {
         })
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use rstest::rstest;
+
+    fn sample_moves() -> Vec<CharacterMove> {
+        vec![
+            CharacterMove {
+                id: "Bryan-1,2,3".into(),
+                name: Some("One Two Low Kick".into()),
+                ..Default::default()
+            },
+            CharacterMove {
+                id: "Kazuya-1,1,2".into(),
+                name: Some("Flash Punch Combo".into()),
+                ..Default::default()
+            },
+        ]
+    }
+
+    #[rstest]
+    #[case(Character::Bryan, "1,2,3")]
+    #[case(Character::Kazuya, "1,1,2")]
+    fn test_exact_id_match(#[case] character: Character, #[case] query: &str) {
+        let id_match = JaroMoveMatcher
+            .match_by_id(character, query, &sample_moves())
+            .unwrap();
+
+        assert_eq!(id_match.character, character);
+        assert_eq!(id_match.score, 1f64);
+        assert_eq!(id_match.character_move.id, format!("{character}-{query}"));
+    }
+
+    #[rstest]
+    #[case(Character::Bryan, "One Two Low Kick", "1,2,3")]
+    #[case(Character::Kazuya, "Flash Punch Combo", "1,1,2")]
+    fn test_exact_name_match(#[case] character: Character, #[case] query: &str, #[case] id: &str) {
+        let id_match = JaroMoveMatcher
+            .match_by_name(character, query, &sample_moves())
+            .unwrap();
+
+        assert_eq!(id_match.character, character);
+        assert_eq!(id_match.score, 1f64);
+        assert_eq!(id_match.character_move.id, format!("{character}-{id}"));
+    }
+}

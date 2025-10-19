@@ -11,6 +11,7 @@ futures = "0.3.31"
 html-escape = "0.2.13"
 poise = "0.6.1"
 reqwest = { version = "0.12.24", features = ["json"] }
+rstest = "0.26.1"
 scraper = "0.24.0"
 serde = { version = "1.0.228", features = ["derive"] }
 serde_json = "1.0.145"
