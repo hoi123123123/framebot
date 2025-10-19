@@ -69,8 +69,18 @@ mod tests {
                 ..Default::default()
             },
             CharacterMove {
+                id: "Bryan-1,2,1".into(),
+                name: Some("One Two Body Blow".into()),
+                ..Default::default()
+            },
+            CharacterMove {
                 id: "Kazuya-1,1,2".into(),
                 name: Some("Flash Punch Combo".into()),
+                ..Default::default()
+            },
+            CharacterMove {
+                id: "Kazuya-1,1".into(),
+                name: None,
                 ..Default::default()
             },
         ]
@@ -101,6 +111,22 @@ mod tests {
 
         assert_eq!(id_match.character, character);
         assert_eq!(id_match.score, 1f64);
+        assert_eq!(id_match.character_move.id, format!("{character}-{id}"));
+    }
+
+    #[rstest]
+    #[case(Character::Kazuya, "112", "1,1,2")]
+    #[case(Character::Bryan, "123", "1,2,3")]
+    fn test_id_without_commas_match(
+        #[case] character: Character,
+        #[case] query: &str,
+        #[case] id: &str,
+    ) {
+        let id_match = JaroMoveMatcher
+            .match_by_id(character, query, &sample_moves())
+            .unwrap();
+
+        assert_eq!(id_match.character, character);
         assert_eq!(id_match.character_move.id, format!("{character}-{id}"));
     }
 }
