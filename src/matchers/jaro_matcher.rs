@@ -17,11 +17,11 @@ impl MoveMatcher for JaroMoveMatcher {
         query: &str,
         moves: &[CharacterMove],
     ) -> Option<CharacterMoveMatch> {
-        let full_query = format!("{character}-{query}");
+        let full_query = format!("{character}-{query}").to_lowercase();
 
         let matched_move = moves
             .iter()
-            .map(|m| (jaro(&m.id, &full_query), m))
+            .map(|m| (jaro(&m.id.to_ascii_lowercase(), &full_query), m))
             .max_by(|x, y| x.0.total_cmp(&y.0))?;
 
         Some(CharacterMoveMatch {
@@ -83,6 +83,16 @@ mod tests {
                 name: None,
                 ..Default::default()
             },
+            CharacterMove {
+                id: "Paul-2".into(),
+                name: Some("Right Jab".into()),
+                ..Default::default()
+            },
+            CharacterMove {
+                id: "Paul-CS.2".into(),
+                name: Some("Phoenix Smasher".into()),
+                ..Default::default()
+            },
         ]
     }
 
@@ -128,5 +138,20 @@ mod tests {
 
         assert_eq!(id_match.character, character);
         assert_eq!(id_match.character_move.id, format!("{character}-{id}"));
+    }
+
+    #[test]
+    fn test_id_case_insensitive_match() {
+        let query = "cs.2";
+        let character = Character::Paul;
+        let id_match = JaroMoveMatcher
+            .match_by_id(character, &query, &sample_moves())
+            .unwrap();
+
+        assert_eq!(id_match.character, Character::Paul);
+        assert_eq!(
+            id_match.character_move.id,
+            format!("{character}-{}", "CS.2")
+        );
     }
 }
