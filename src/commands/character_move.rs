@@ -149,11 +149,7 @@ fn build_embed_for_move_info(character: Character, move_info: &CharacterMove) ->
                 true,
             ),
         ])
-        .fields(vec![(
-            "Notes",
-            decode_notes(move_info.notes.as_deref().unwrap_or_default()),
-            false,
-        )])
+        .fields(vec![("Notes", format_notes(&move_info.notes), false)])
 }
 
 fn decode_move_name(move_name: &str) -> String {
@@ -164,17 +160,9 @@ fn decode_move_name(move_name: &str) -> String {
         .collect()
 }
 
-fn decode_notes(notes: &str) -> String {
-    let decoded = html_escape::decode_html_entities(&notes);
-    let document = Html::parse_fragment(&decoded);
-
-    document
-        .root_element()
-        .text()
-        .map(|s| s.replace("* ", ""))
-        .collect::<String>()
-        .lines()
-        .filter(|s| !s.trim().is_empty())
+fn format_notes(notes: &[String]) -> String {
+    notes
+        .iter()
         .map(|s| format!("* {s}"))
         .collect::<Vec<String>>()
         .join("\n")

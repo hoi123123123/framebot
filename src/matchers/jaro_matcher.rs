@@ -145,7 +145,7 @@ mod tests {
         let query = "cs.2";
         let character = Character::Paul;
         let id_match = JaroMoveMatcher
-            .match_by_id(character, &query, &sample_moves())
+            .match_by_id(character, query, &sample_moves())
             .unwrap();
 
         assert_eq!(id_match.character, Character::Paul);

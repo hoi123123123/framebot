@@ -5,6 +5,7 @@ use crate::{
 
 use anyhow::Result;
 use async_trait::async_trait;
+use scraper::Html;
 use serde::Deserialize;
 
 pub struct WavuMoveRepository;
@@ -101,14 +102,50 @@ struct MoveTableRow {
     notes: Option<String>,
 }
 
+impl MoveTableRow {
+    fn decode_bullet_list(bullet_list_html: &Option<impl AsRef<str>>) -> Vec<String> {
+        let Some(html) = bullet_list_html else {
+            return vec![];
+        };
+
+        let decoded = html_escape::decode_html_entities(html);
+        let document = Html::parse_fragment(&decoded);
+
+        document
+            .root_element()
+            .text()
+            .map(|s| s.replace("* ", ""))
+            .collect::<String>()
+            .lines()
+            .filter(|s| !s.trim().is_empty())
+            .map(|s| format!("* {s}"))
+            .collect::<Vec<String>>()
+    }
+
+    fn decode_bullet_list_remove_bullets(
+        bullet_list_html: &Option<impl AsRef<str>>,
+    ) -> Vec<String> {
+        let decoded = MoveTableRow::decode_bullet_list(bullet_list_html);
+
+        decoded
+            .into_iter()
+            .map(|s| {
+                s.strip_prefix("* ")
+                    .map(|s_without_prefix| s_without_prefix.to_string())
+                    .unwrap_or(s)
+            })
+            .collect()
+    }
+}
+
 impl From<MoveTableRow> for CharacterMove {
     fn from(row: MoveTableRow) -> Self {
         CharacterMove {
             id: row.id,
             name: row.name,
             input: row.input,
-            alias: row.alias,
-            alt: row.alt,
+            alias: MoveTableRow::decode_bullet_list_remove_bullets(&row.alias),
+            alt: MoveTableRow::decode_bullet_list_remove_bullets(&row.alt),
             parent: row.parent,
             target: row.target,
             damage: row.damage,
@@ -120,7 +157,7 @@ impl From<MoveTableRow> for CharacterMove {
             on_block: row.block,
             on_hit: row.hit,
             on_counter_hit: row.ch,
-            notes: row.notes,
+            notes: MoveTableRow::decode_bullet_list(&row.notes),
         }
     }
 }

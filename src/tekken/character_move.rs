@@ -3,8 +3,8 @@ pub struct CharacterMove {
     pub id: String,
     pub name: Option<String>,
     pub input: Option<String>,
-    pub alias: Option<String>,
-    pub alt: Option<String>,
+    pub alias: Vec<String>,
+    pub alt: Vec<String>,
     pub parent: Option<String>,
     pub target: Option<String>,
     pub damage: Option<String>,
@@ -16,5 +16,5 @@ pub struct CharacterMove {
     pub on_block: Option<String>,
     pub on_hit: Option<String>,
     pub on_counter_hit: Option<String>,
-    pub notes: Option<String>,
+    pub notes: Vec<String>,
 }
