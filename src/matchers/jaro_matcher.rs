@@ -54,47 +54,54 @@ impl MoveMatcher for JaroMoveMatcher {
             score: matched_move.0,
         })
     }
+
+    fn match_by_alt(
+        &self,
+        character: Character,
+        query: &str,
+        moves: &[CharacterMove],
+    ) -> Option<CharacterMoveMatch> {
+        let full_query = format!("{character}-{query}").to_lowercase();
+
+        let matched_move = moves
+            .iter()
+            .flat_map(|m| m.alt.iter().map(move |alt| (m, alt)))
+            .map(|(m, alt)| (jaro(&alt.to_ascii_lowercase(), &full_query), m))
+            .max_by(|x, y| x.0.total_cmp(&y.0))?;
+
+        Some(CharacterMoveMatch {
+            character,
+            character_move: matched_move.1.clone(),
+            score: matched_move.0,
+        })
+    }
+
+    fn match_by_alias(
+        &self,
+        character: Character,
+        query: &str,
+        moves: &[CharacterMove],
+    ) -> Option<CharacterMoveMatch> {
+        let full_query = format!("{character}-{query}").to_lowercase();
+
+        let matched_move = moves
+            .iter()
+            .flat_map(|m| m.alias.iter().map(move |alias| (m, alias)))
+            .map(|(m, alias)| (jaro(&alias.to_ascii_lowercase(), &full_query), m))
+            .max_by(|x, y| x.0.total_cmp(&y.0))?;
+
+        Some(CharacterMoveMatch {
+            character,
+            character_move: matched_move.1.clone(),
+            score: matched_move.0,
+        })
+    }
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
     use rstest::rstest;
-
-    fn sample_moves() -> Vec<CharacterMove> {
-        vec![
-            CharacterMove {
-                id: "Bryan-1,2,3".into(),
-                name: Some("One Two Low Kick".into()),
-                ..Default::default()
-            },
-            CharacterMove {
-                id: "Bryan-1,2,1".into(),
-                name: Some("One Two Body Blow".into()),
-                ..Default::default()
-            },
-            CharacterMove {
-                id: "Kazuya-1,1,2".into(),
-                name: Some("Flash Punch Combo".into()),
-                ..Default::default()
-            },
-            CharacterMove {
-                id: "Kazuya-1,1".into(),
-                name: None,
-                ..Default::default()
-            },
-            CharacterMove {
-                id: "Paul-2".into(),
-                name: Some("Right Jab".into()),
-                ..Default::default()
-            },
-            CharacterMove {
-                id: "Paul-CS.2".into(),
-                name: Some("Phoenix Smasher".into()),
-                ..Default::default()
-            },
-        ]
-    }
 
     #[rstest]
     #[case(Character::Bryan, "1,2,3")]
@@ -144,6 +151,7 @@ mod tests {
     fn test_id_case_insensitive_match() {
         let query = "cs.2";
         let character = Character::Paul;
+
         let id_match = JaroMoveMatcher
             .match_by_id(character, query, &sample_moves())
             .unwrap();
@@ -153,5 +161,79 @@ mod tests {
             id_match.character_move.id,
             format!("{character}-{}", "CS.2")
         );
+    }
+
+    #[test]
+    fn test_match_alt() {
+        let query = "qcf+2";
+        let character = Character::Paul;
+
+        let alt_match = JaroMoveMatcher
+            .match_by_alt(character, query, &sample_moves())
+            .unwrap();
+
+        assert_eq!(alt_match.character, Character::Paul);
+        assert_eq!(
+            alt_match.character_move.id,
+            format!("{character}-{}", "CS.2")
+        );
+    }
+
+    #[test]
+    fn test_match_alias() {
+        let query = "deathfist";
+        let character = Character::Paul;
+
+        let alias_match = JaroMoveMatcher
+            .match_by_alias(character, query, &sample_moves())
+            .unwrap();
+
+        assert_eq!(alias_match.character, Character::Paul);
+        assert_eq!(
+            alias_match.character_move.id,
+            format!("{character}-{}", "CS.2")
+        );
+    }
+
+    fn sample_moves() -> Vec<CharacterMove> {
+        vec![
+            CharacterMove {
+                id: "Bryan-1,2,3".into(),
+                name: Some("One Two Low Kick".into()),
+                ..Default::default()
+            },
+            CharacterMove {
+                id: "Bryan-1,2,1".into(),
+                name: Some("One Two Body Blow".into()),
+                ..Default::default()
+            },
+            CharacterMove {
+                id: "Kazuya-1,1,2".into(),
+                name: Some("Flash Punch Combo".into()),
+                ..Default::default()
+            },
+            CharacterMove {
+                id: "Kazuya-1,1".into(),
+                name: None,
+                ..Default::default()
+            },
+            CharacterMove {
+                id: "Paul-2".into(),
+                name: Some("Right Jab".into()),
+                ..Default::default()
+            },
+            CharacterMove {
+                id: "Paul-CS.2".into(),
+                name: Some("Phoenix Smasher".into()),
+                alt: vec!["qcf+2".into()],
+                alias: vec!["deathfist".into()],
+                ..Default::default()
+            },
+            CharacterMove {
+                id: "Paul-qcf".into(),
+                name: Some("Cormorant Step".into()),
+                ..Default::default()
+            },
+        ]
     }
 }

@@ -29,7 +29,7 @@ macro_rules! define_character_commands {
                     let move_info = ctx
                         .data()
                         .frame_service
-                        .move_by_id_or_name(character, &query);
+                        .query_move(character, &query);
 
                     reply_with_move_info(ctx, move_info).await
                 }

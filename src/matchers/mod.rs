@@ -19,6 +19,20 @@ pub trait MoveMatcher: Send + Sync {
         query: &str,
         moves: &[CharacterMove],
     ) -> Option<CharacterMoveMatch>;
+
+    fn match_by_alt(
+        &self,
+        character: Character,
+        query: &str,
+        moves: &[CharacterMove],
+    ) -> Option<CharacterMoveMatch>;
+
+    fn match_by_alias(
+        &self,
+        character: Character,
+        query: &str,
+        moves: &[CharacterMove],
+    ) -> Option<CharacterMoveMatch>;
 }
 
 #[derive(Debug, PartialEq)]
