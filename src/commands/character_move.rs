@@ -48,7 +48,7 @@ define_character_commands! {
     (Claudio, claudio),
     (Clive, clive),
     (DevilJin, deviljin),
-    (Dragunov, dragonuv),
+    (Dragunov, dragunov),
     (Eddy, eddy),
     (Fahkumram, fahkumram),
     (Feng, feng),
