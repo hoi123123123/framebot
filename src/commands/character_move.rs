@@ -21,9 +21,13 @@ macro_rules! define_character_commands {
             use poise::command;
 
             $(
+                /// Search for frame data
                 #[instrument(skip(ctx))]
                 #[command(slash_command, prefix_command)]
-                pub async fn $fnname(ctx: Context<'_>, query: Vec<String>) -> Result<(), Error> {
+                pub async fn $fnname(
+                    ctx: Context<'_>,
+                    #[description = "Move inputs or move name"] query: Vec<String>
+                ) -> Result<(), Error> {
                     let character = Character::$name;
 
                     let move_info = ctx
