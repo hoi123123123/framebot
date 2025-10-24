@@ -60,7 +60,7 @@ impl<R: MoveRepository, M: MoveMatcher> FrameService<R, M> {
 
         let best_match = vec![id_match, name_match, alt_match, alias_match]
             .into_iter()
-            .filter_map(|x| x)
+            .flatten()
             .max_by(|x, y| x.score.total_cmp(&y.score))?;
 
         Some(best_match)

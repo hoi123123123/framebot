@@ -61,7 +61,7 @@ impl MoveMatcher for JaroMoveMatcher {
         query: &str,
         moves: &[CharacterMove],
     ) -> Option<CharacterMoveMatch> {
-        let full_query = format!("{query}").to_lowercase();
+        let full_query = query.to_string().to_lowercase();
 
         let matched_move = moves
             .iter()
@@ -82,7 +82,7 @@ impl MoveMatcher for JaroMoveMatcher {
         query: &str,
         moves: &[CharacterMove],
     ) -> Option<CharacterMoveMatch> {
-        let full_query = format!("{query}").to_lowercase();
+        let full_query = query.to_string().to_lowercase();
 
         let matched_move = moves
             .iter()
