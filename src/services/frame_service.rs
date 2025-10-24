@@ -30,30 +30,37 @@ impl<R: MoveRepository, M: MoveMatcher> FrameService<R, M> {
 
         let moves = self.store.moves(character)?;
 
-        let id_match = self.matcher.match_by_id(character, &move_query, &moves)?;
-        if id_match.score >= 1f64 {
-            return Some(id_match);
+        let id_match = self.matcher.match_by_id(character, &move_query, &moves);
+        if let Some(ref m) = id_match
+            && m.score >= 1f64
+        {
+            return id_match;
         }
 
-        let name_match = self.matcher.match_by_name(character, &move_query, &moves)?;
-        if name_match.score >= 1f64 {
-            return Some(name_match);
+        let name_match = self.matcher.match_by_name(character, &move_query, &moves);
+        if let Some(ref m) = name_match
+            && m.score >= 1f64
+        {
+            return name_match;
         }
 
-        let alt_match = self.matcher.match_by_alt(character, &move_query, &moves)?;
-        if alt_match.score >= 1f64 {
-            return Some(alt_match);
+        let alt_match = self.matcher.match_by_alt(character, &move_query, &moves);
+        if let Some(ref m) = alt_match
+            && m.score >= 1f64
+        {
+            return alt_match;
         }
 
-        let alias_match = self
-            .matcher
-            .match_by_alias(character, &move_query, &moves)?;
-        if alias_match.score >= 1f64 {
-            return Some(alias_match);
+        let alias_match = self.matcher.match_by_alias(character, &move_query, &moves);
+        if let Some(ref m) = alias_match
+            && m.score >= 1f64
+        {
+            return alias_match;
         }
 
         let best_match = vec![id_match, name_match, alt_match, alias_match]
             .into_iter()
+            .filter_map(|x| x)
             .max_by(|x, y| x.score.total_cmp(&y.score))?;
 
         Some(best_match)
