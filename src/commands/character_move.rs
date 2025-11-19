@@ -130,7 +130,7 @@ pub async fn anna(
 }
 
 #[instrument(skip(ctx))]
-#[command(slash_command, prefix_command)]
+#[command(slash_command, prefix_command, aliases("ak"))]
 pub async fn armorking(
     ctx: Context<'_>,
     #[description = "Move inputs or move name"] query: Vec<String>,
@@ -184,7 +184,7 @@ pub async fn clive(
 }
 
 #[instrument(skip(ctx))]
-#[command(slash_command, prefix_command)]
+#[command(slash_command, prefix_command, aliases("dj"))]
 pub async fn deviljin(
     ctx: Context<'_>,
     #[description = "Move inputs or move name"] query: Vec<String>,
@@ -193,7 +193,7 @@ pub async fn deviljin(
 }
 
 #[instrument(skip(ctx))]
-#[command(slash_command, prefix_command)]
+#[command(slash_command, prefix_command, aliases("drag"))]
 pub async fn dragunov(
     ctx: Context<'_>,
     #[description = "Move inputs or move name"] query: Vec<String>,
@@ -211,7 +211,7 @@ pub async fn eddy(
 }
 
 #[instrument(skip(ctx))]
-#[command(slash_command, prefix_command)]
+#[command(slash_command, prefix_command, aliases("fahk"))]
 pub async fn fahkumram(
     ctx: Context<'_>,
     #[description = "Move inputs or move name"] query: Vec<String>,
@@ -229,7 +229,7 @@ pub async fn feng(
 }
 
 #[instrument(skip(ctx))]
-#[command(slash_command, prefix_command)]
+#[command(slash_command, prefix_command, aliases("hei"))]
 pub async fn heihachi(
     ctx: Context<'_>,
     #[description = "Move inputs or move name"] query: Vec<String>,
@@ -238,7 +238,7 @@ pub async fn heihachi(
 }
 
 #[instrument(skip(ctx))]
-#[command(slash_command, prefix_command)]
+#[command(slash_command, prefix_command, aliases("hwo"))]
 pub async fn hwoarang(
     ctx: Context<'_>,
     #[description = "Move inputs or move name"] query: Vec<String>,
@@ -247,7 +247,7 @@ pub async fn hwoarang(
 }
 
 #[instrument(skip(ctx))]
-#[command(slash_command, prefix_command)]
+#[command(slash_command, prefix_command, aliases("jack"))]
 pub async fn jack8(
     ctx: Context<'_>,
     #[description = "Move inputs or move name"] query: Vec<String>,
@@ -274,7 +274,7 @@ pub async fn jun(
 }
 
 #[instrument(skip(ctx))]
-#[command(slash_command, prefix_command)]
+#[command(slash_command, prefix_command, aliases("kaz"))]
 pub async fn kazuya(
     ctx: Context<'_>,
     #[description = "Move inputs or move name"] query: Vec<String>,
@@ -445,7 +445,7 @@ pub async fn xiaoyu(
 }
 
 #[instrument(skip(ctx))]
-#[command(slash_command, prefix_command)]
+#[command(slash_command, prefix_command, aliases("yoshi"))]
 pub async fn yoshimitsu(
     ctx: Context<'_>,
     #[description = "Move inputs or move name"] query: Vec<String>,
