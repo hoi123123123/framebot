@@ -136,12 +136,26 @@ impl MoveTableRow {
             })
             .collect()
     }
+
+    /// Justframe input is shown as "#" on wavu wiki, but in the API you get
+    /// "${justFrame}" for some reason
+    ///
+    /// Returns `Some` with the fixed string if the justframe pattern was replaced,
+    /// `None` otherwise
+    fn fix_justframe_notation(s: &str) -> Option<String> {
+        let justframe_pattern = "${justFrame}";
+        if s.contains(justframe_pattern) {
+            return Some(s.replace(justframe_pattern, "#"));
+        }
+        None
+    }
 }
 
 impl From<MoveTableRow> for CharacterMove {
     fn from(row: MoveTableRow) -> Self {
+        let fixed_id = MoveTableRow::fix_justframe_notation(&row.id);
         CharacterMove {
-            id: row.id,
+            id: fixed_id.unwrap_or(row.id),
             name: row.name,
             input: row.input,
             alias: MoveTableRow::decode_bullet_list_remove_bullets(&row.alias),
@@ -159,5 +173,22 @@ impl From<MoveTableRow> for CharacterMove {
             on_counter_hit: row.ch,
             notes: MoveTableRow::decode_bullet_list(&row.notes),
         }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_replace_justframe_notation() {
+        let fixed = MoveTableRow::fix_justframe_notation("Kazuya-f,n,d,df${justFrame}2");
+        assert_eq!(fixed.unwrap(), "Kazuya-f,n,d,df#2");
+    }
+
+    #[test]
+    fn test_replace_justframe_notation_no_justframe_pattern_match() {
+        let fixed = MoveTableRow::fix_justframe_notation("Kazuya-f,n,d,df2");
+        assert!(fixed.is_none());
     }
 }
