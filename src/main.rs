@@ -5,7 +5,7 @@ use anyhow::Result;
 use poise::serenity_prelude as serenity;
 use tracing::error;
 
-use crate::commands::character_move::generated_character_commands::*;
+use crate::commands::character_move::*;
 use crate::commands::ping::ping;
 use crate::matchers::jaro_matcher::JaroMoveMatcher;
 use crate::repositories::wavu_move_repository::WavuMoveRepository;

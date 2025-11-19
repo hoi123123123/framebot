@@ -1,6 +1,9 @@
-use poise::serenity_prelude::{Colour, CreateEmbed};
+use poise::{
+    command,
+    serenity_prelude::{Colour, CreateEmbed},
+};
 use scraper::Html;
-use tracing::info;
+use tracing::{info, instrument};
 
 use anyhow::Result;
 
@@ -10,79 +13,6 @@ use crate::{
     matchers::CharacterMoveMatch,
     tekken::{TEKKEN_RED, character::Character, character_move::CharacterMove},
 };
-
-macro_rules! define_character_commands {
-( $( ($name:ident, $fnname:ident) ),* ) => {
-        pub mod generated_character_commands {
-            use super::*;
-            use crate::{Context, Error};
-            use crate::tekken::character::Character;
-            use tracing::instrument;
-            use poise::command;
-
-            $(
-                /// Search for frame data
-                #[instrument(skip(ctx))]
-                #[command(slash_command, prefix_command)]
-                pub async fn $fnname(
-                    ctx: Context<'_>,
-                    #[description = "Move inputs or move name"] query: Vec<String>
-                ) -> Result<(), Error> {
-                    let character = Character::$name;
-
-                    let move_info = ctx
-                        .data()
-                        .frame_service
-                        .query_move(character, &query);
-
-                    reply_with_move_info(ctx, move_info).await
-                }
-            )*
-        }
-    };
-}
-
-define_character_commands! {
-    (Alisa, alisa),
-    (Anna, anna),
-    (ArmorKing, armorking),
-    (Asuka, asuka),
-    (Azucena, azucena),
-    (Bryan, bryan),
-    (Claudio, claudio),
-    (Clive, clive),
-    (DevilJin, deviljin),
-    (Dragunov, dragunov),
-    (Eddy, eddy),
-    (Fahkumram, fahkumram),
-    (Feng, feng),
-    (Heihachi, heihachi),
-    (Hwoarang, hwoarang),
-    (Jack8, jack8),
-    (Jin, jin),
-    (Jun, jun),
-    (Kazuya, kazuya),
-    (King, king),
-    (Kuma, kuma),
-    (Lars, lars),
-    (Law, law),
-    (Lee, lee),
-    (Leo, leo),
-    (Leroy, leroy),
-    (Lidia, lidia),
-    (Lili, lili),
-    (Nina, nina),
-    (Panda, panda),
-    (Paul, paul),
-    (Raven, raven),
-    (Reina, reina),
-    (Shaheen, shaheen),
-    (Steve, steve),
-    (Victor, victor),
-    (Xiaoyu, xiaoyu),
-    (Yoshimitsu, yoshimitsu),
-    (Zafina, zafina)
-}
 
 async fn reply_with_move_info(
     ctx: Context<'_>,
@@ -170,4 +100,364 @@ fn format_notes(notes: &[String]) -> String {
         .map(|s| format!("* {s}"))
         .collect::<Vec<String>>()
         .join("\n")
+}
+
+async fn character_command_inner(
+    ctx: Context<'_>,
+    character: Character,
+    query: Vec<String>,
+) -> Result<(), Error> {
+    let move_info = ctx.data().frame_service.query_move(character, &query);
+    reply_with_move_info(ctx, move_info).await
+}
+
+#[instrument(skip(ctx))]
+#[command(slash_command, prefix_command)]
+pub async fn alisa(
+    ctx: Context<'_>,
+    #[description = "Move inputs or move name"] query: Vec<String>,
+) -> Result<(), Error> {
+    character_command_inner(ctx, Character::Alisa, query).await
+}
+
+#[instrument(skip(ctx))]
+#[command(slash_command, prefix_command)]
+pub async fn anna(
+    ctx: Context<'_>,
+    #[description = "Move inputs or move name"] query: Vec<String>,
+) -> Result<(), Error> {
+    character_command_inner(ctx, Character::Anna, query).await
+}
+
+#[instrument(skip(ctx))]
+#[command(slash_command, prefix_command, aliases("ak"))]
+pub async fn armorking(
+    ctx: Context<'_>,
+    #[description = "Move inputs or move name"] query: Vec<String>,
+) -> Result<(), Error> {
+    character_command_inner(ctx, Character::ArmorKing, query).await
+}
+
+#[instrument(skip(ctx))]
+#[command(slash_command, prefix_command)]
+pub async fn asuka(
+    ctx: Context<'_>,
+    #[description = "Move inputs or move name"] query: Vec<String>,
+) -> Result<(), Error> {
+    character_command_inner(ctx, Character::Asuka, query).await
+}
+
+#[instrument(skip(ctx))]
+#[command(slash_command, prefix_command)]
+pub async fn azucena(
+    ctx: Context<'_>,
+    #[description = "Move inputs or move name"] query: Vec<String>,
+) -> Result<(), Error> {
+    character_command_inner(ctx, Character::Azucena, query).await
+}
+
+#[instrument(skip(ctx))]
+#[command(slash_command, prefix_command)]
+pub async fn bryan(
+    ctx: Context<'_>,
+    #[description = "Move inputs or move name"] query: Vec<String>,
+) -> Result<(), Error> {
+    character_command_inner(ctx, Character::Bryan, query).await
+}
+
+#[instrument(skip(ctx))]
+#[command(slash_command, prefix_command)]
+pub async fn claudio(
+    ctx: Context<'_>,
+    #[description = "Move inputs or move name"] query: Vec<String>,
+) -> Result<(), Error> {
+    character_command_inner(ctx, Character::Claudio, query).await
+}
+
+#[instrument(skip(ctx))]
+#[command(slash_command, prefix_command)]
+pub async fn clive(
+    ctx: Context<'_>,
+    #[description = "Move inputs or move name"] query: Vec<String>,
+) -> Result<(), Error> {
+    character_command_inner(ctx, Character::Clive, query).await
+}
+
+#[instrument(skip(ctx))]
+#[command(slash_command, prefix_command, aliases("dj"))]
+pub async fn deviljin(
+    ctx: Context<'_>,
+    #[description = "Move inputs or move name"] query: Vec<String>,
+) -> Result<(), Error> {
+    character_command_inner(ctx, Character::DevilJin, query).await
+}
+
+#[instrument(skip(ctx))]
+#[command(slash_command, prefix_command, aliases("drag"))]
+pub async fn dragunov(
+    ctx: Context<'_>,
+    #[description = "Move inputs or move name"] query: Vec<String>,
+) -> Result<(), Error> {
+    character_command_inner(ctx, Character::Dragunov, query).await
+}
+
+#[instrument(skip(ctx))]
+#[command(slash_command, prefix_command)]
+pub async fn eddy(
+    ctx: Context<'_>,
+    #[description = "Move inputs or move name"] query: Vec<String>,
+) -> Result<(), Error> {
+    character_command_inner(ctx, Character::Eddy, query).await
+}
+
+#[instrument(skip(ctx))]
+#[command(slash_command, prefix_command, aliases("fahk"))]
+pub async fn fahkumram(
+    ctx: Context<'_>,
+    #[description = "Move inputs or move name"] query: Vec<String>,
+) -> Result<(), Error> {
+    character_command_inner(ctx, Character::Fahkumram, query).await
+}
+
+#[instrument(skip(ctx))]
+#[command(slash_command, prefix_command)]
+pub async fn feng(
+    ctx: Context<'_>,
+    #[description = "Move inputs or move name"] query: Vec<String>,
+) -> Result<(), Error> {
+    character_command_inner(ctx, Character::Feng, query).await
+}
+
+#[instrument(skip(ctx))]
+#[command(slash_command, prefix_command, aliases("hei"))]
+pub async fn heihachi(
+    ctx: Context<'_>,
+    #[description = "Move inputs or move name"] query: Vec<String>,
+) -> Result<(), Error> {
+    character_command_inner(ctx, Character::Heihachi, query).await
+}
+
+#[instrument(skip(ctx))]
+#[command(slash_command, prefix_command, aliases("hwo"))]
+pub async fn hwoarang(
+    ctx: Context<'_>,
+    #[description = "Move inputs or move name"] query: Vec<String>,
+) -> Result<(), Error> {
+    character_command_inner(ctx, Character::Hwoarang, query).await
+}
+
+#[instrument(skip(ctx))]
+#[command(slash_command, prefix_command, aliases("jack"))]
+pub async fn jack8(
+    ctx: Context<'_>,
+    #[description = "Move inputs or move name"] query: Vec<String>,
+) -> Result<(), Error> {
+    character_command_inner(ctx, Character::Jack8, query).await
+}
+
+#[instrument(skip(ctx))]
+#[command(slash_command, prefix_command)]
+pub async fn jin(
+    ctx: Context<'_>,
+    #[description = "Move inputs or move name"] query: Vec<String>,
+) -> Result<(), Error> {
+    character_command_inner(ctx, Character::Jin, query).await
+}
+
+#[instrument(skip(ctx))]
+#[command(slash_command, prefix_command)]
+pub async fn jun(
+    ctx: Context<'_>,
+    #[description = "Move inputs or move name"] query: Vec<String>,
+) -> Result<(), Error> {
+    character_command_inner(ctx, Character::Jun, query).await
+}
+
+#[instrument(skip(ctx))]
+#[command(slash_command, prefix_command, aliases("kaz"))]
+pub async fn kazuya(
+    ctx: Context<'_>,
+    #[description = "Move inputs or move name"] query: Vec<String>,
+) -> Result<(), Error> {
+    character_command_inner(ctx, Character::Kazuya, query).await
+}
+
+#[instrument(skip(ctx))]
+#[command(slash_command, prefix_command)]
+pub async fn king(
+    ctx: Context<'_>,
+    #[description = "Move inputs or move name"] query: Vec<String>,
+) -> Result<(), Error> {
+    character_command_inner(ctx, Character::King, query).await
+}
+
+#[instrument(skip(ctx))]
+#[command(slash_command, prefix_command)]
+pub async fn kuma(
+    ctx: Context<'_>,
+    #[description = "Move inputs or move name"] query: Vec<String>,
+) -> Result<(), Error> {
+    character_command_inner(ctx, Character::Kuma, query).await
+}
+
+#[instrument(skip(ctx))]
+#[command(slash_command, prefix_command)]
+pub async fn lars(
+    ctx: Context<'_>,
+    #[description = "Move inputs or move name"] query: Vec<String>,
+) -> Result<(), Error> {
+    character_command_inner(ctx, Character::Lars, query).await
+}
+
+#[instrument(skip(ctx))]
+#[command(slash_command, prefix_command)]
+pub async fn law(
+    ctx: Context<'_>,
+    #[description = "Move inputs or move name"] query: Vec<String>,
+) -> Result<(), Error> {
+    character_command_inner(ctx, Character::Law, query).await
+}
+
+#[instrument(skip(ctx))]
+#[command(slash_command, prefix_command)]
+pub async fn lee(
+    ctx: Context<'_>,
+    #[description = "Move inputs or move name"] query: Vec<String>,
+) -> Result<(), Error> {
+    character_command_inner(ctx, Character::Lee, query).await
+}
+
+#[instrument(skip(ctx))]
+#[command(slash_command, prefix_command)]
+pub async fn leo(
+    ctx: Context<'_>,
+    #[description = "Move inputs or move name"] query: Vec<String>,
+) -> Result<(), Error> {
+    character_command_inner(ctx, Character::Leo, query).await
+}
+
+#[instrument(skip(ctx))]
+#[command(slash_command, prefix_command)]
+pub async fn leroy(
+    ctx: Context<'_>,
+    #[description = "Move inputs or move name"] query: Vec<String>,
+) -> Result<(), Error> {
+    character_command_inner(ctx, Character::Leroy, query).await
+}
+
+#[instrument(skip(ctx))]
+#[command(slash_command, prefix_command)]
+pub async fn lidia(
+    ctx: Context<'_>,
+    #[description = "Move inputs or move name"] query: Vec<String>,
+) -> Result<(), Error> {
+    character_command_inner(ctx, Character::Lidia, query).await
+}
+
+#[instrument(skip(ctx))]
+#[command(slash_command, prefix_command)]
+pub async fn lili(
+    ctx: Context<'_>,
+    #[description = "Move inputs or move name"] query: Vec<String>,
+) -> Result<(), Error> {
+    character_command_inner(ctx, Character::Lili, query).await
+}
+
+#[instrument(skip(ctx))]
+#[command(slash_command, prefix_command)]
+pub async fn nina(
+    ctx: Context<'_>,
+    #[description = "Move inputs or move name"] query: Vec<String>,
+) -> Result<(), Error> {
+    character_command_inner(ctx, Character::Nina, query).await
+}
+
+#[instrument(skip(ctx))]
+#[command(slash_command, prefix_command)]
+pub async fn panda(
+    ctx: Context<'_>,
+    #[description = "Move inputs or move name"] query: Vec<String>,
+) -> Result<(), Error> {
+    character_command_inner(ctx, Character::Panda, query).await
+}
+
+#[instrument(skip(ctx))]
+#[command(slash_command, prefix_command)]
+pub async fn paul(
+    ctx: Context<'_>,
+    #[description = "Move inputs or move name"] query: Vec<String>,
+) -> Result<(), Error> {
+    character_command_inner(ctx, Character::Paul, query).await
+}
+
+#[instrument(skip(ctx))]
+#[command(slash_command, prefix_command)]
+pub async fn raven(
+    ctx: Context<'_>,
+    #[description = "Move inputs or move name"] query: Vec<String>,
+) -> Result<(), Error> {
+    character_command_inner(ctx, Character::Raven, query).await
+}
+
+#[instrument(skip(ctx))]
+#[command(slash_command, prefix_command)]
+pub async fn reina(
+    ctx: Context<'_>,
+    #[description = "Move inputs or move name"] query: Vec<String>,
+) -> Result<(), Error> {
+    character_command_inner(ctx, Character::Reina, query).await
+}
+
+#[instrument(skip(ctx))]
+#[command(slash_command, prefix_command)]
+pub async fn shaheen(
+    ctx: Context<'_>,
+    #[description = "Move inputs or move name"] query: Vec<String>,
+) -> Result<(), Error> {
+    character_command_inner(ctx, Character::Shaheen, query).await
+}
+
+#[instrument(skip(ctx))]
+#[command(slash_command, prefix_command)]
+pub async fn steve(
+    ctx: Context<'_>,
+    #[description = "Move inputs or move name"] query: Vec<String>,
+) -> Result<(), Error> {
+    character_command_inner(ctx, Character::Steve, query).await
+}
+
+#[instrument(skip(ctx))]
+#[command(slash_command, prefix_command)]
+pub async fn victor(
+    ctx: Context<'_>,
+    #[description = "Move inputs or move name"] query: Vec<String>,
+) -> Result<(), Error> {
+    character_command_inner(ctx, Character::Victor, query).await
+}
+
+#[instrument(skip(ctx))]
+#[command(slash_command, prefix_command)]
+pub async fn xiaoyu(
+    ctx: Context<'_>,
+    #[description = "Move inputs or move name"] query: Vec<String>,
+) -> Result<(), Error> {
+    character_command_inner(ctx, Character::Xiaoyu, query).await
+}
+
+#[instrument(skip(ctx))]
+#[command(slash_command, prefix_command, aliases("yoshi"))]
+pub async fn yoshimitsu(
+    ctx: Context<'_>,
+    #[description = "Move inputs or move name"] query: Vec<String>,
+) -> Result<(), Error> {
+    character_command_inner(ctx, Character::Yoshimitsu, query).await
+}
+
+#[instrument(skip(ctx))]
+#[command(slash_command, prefix_command)]
+pub async fn zafina(
+    ctx: Context<'_>,
+    #[description = "Move inputs or move name"] query: Vec<String>,
+) -> Result<(), Error> {
+    character_command_inner(ctx, Character::Zafina, query).await
 }
