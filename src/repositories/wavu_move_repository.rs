@@ -1,4 +1,5 @@
 use crate::{
+    converters::alias_generators,
     repositories::MoveRepository,
     tekken::{character::Character, character_move::CharacterMove},
 };
@@ -34,11 +35,20 @@ impl MoveRepository for WavuMoveRepository {
             .json::<MoveTableQueryResponse>()
             .await?;
 
-        Ok(response
+        let mut character_moves = response
             .cargoquery
             .into_iter()
             .map(|entry| entry.title.into())
-            .collect())
+            .collect::<Vec<CharacterMove>>();
+
+        // Add aliases to increase the chance of finding the moves people actually intend to see
+        for m in character_moves.iter_mut() {
+            if let Some(alias) = alias_generators::drop_first_plus_after_letter(character, &m.id) {
+                m.alias.push(alias);
+            }
+        }
+
+        Ok(character_moves)
     }
 }
 
@@ -154,6 +164,7 @@ impl MoveTableRow {
 impl From<MoveTableRow> for CharacterMove {
     fn from(row: MoveTableRow) -> Self {
         let fixed_id = MoveTableRow::fix_justframe_notation(&row.id);
+
         CharacterMove {
             id: fixed_id.unwrap_or(row.id),
             name: row.name,

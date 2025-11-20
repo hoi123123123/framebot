@@ -1,7 +1,6 @@
 use anyhow::Result;
 
 use crate::{
-    converters::alias_generators,
     matchers::{CharacterMoveMatch, MoveMatcher},
     move_store::MoveStore,
     repositories::MoveRepository,
@@ -29,11 +28,7 @@ impl<R: MoveRepository, M: MoveMatcher> FrameService<R, M> {
             .collect::<Vec<_>>()
             .join(" ");
 
-        let mut moves = self.store.moves(character)?;
-
-        for m in moves.iter_mut() {
-            alias_generators::drop_first_plus_after_letter(character, m);
-        }
+        let moves = self.store.moves(character)?;
 
         let id_match = self.matcher.match_by_id(character, &move_query, &moves);
         if let Some(ref m) = id_match
