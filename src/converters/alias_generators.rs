@@ -25,7 +25,7 @@ pub fn drop_first_plus_after_letter(character: Character, move_id: &str) -> Opti
     let mut new_alias = String::with_capacity(chars.len());
 
     for ch in chars {
-        if !plus_skipped && ch == '+' && prev_char.is_ascii_lowercase() {
+        if !plus_skipped && ch == '+' && prev_char.is_ascii_alphabetic() {
             plus_skipped = true;
             continue;
         }
@@ -49,10 +49,11 @@ mod tests {
     #[case("d+2,d+2", "d2,d+2", Character::Anna)]
     #[case("ff+1+2", "ff1+2", Character::Anna)]
     #[case("b1+2", "b1+2", Character::Anna)]
-    #[case("B+1+2", "B+1+2", Character::Anna)]
+    #[case("B+1+2", "B1+2", Character::Anna)]
     #[case("uf+1", "uf1", Character::Anna)]
     #[case("Alisa-d+3+4", "d3+4", Character::Alisa)]
     #[case("Jack-8-d+1+2", "d1+2", Character::Jack8)]
+    #[case("Jack-8-f,F+1", "f,F1", Character::Jack8)]
     fn test_drop_first_plus_after_letter(
         #[case] move_id: &str,
         #[case] expected_alias: &str,
