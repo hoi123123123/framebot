@@ -3,7 +3,7 @@ use tracing_subscriber::util::SubscriberInitExt;
 
 use anyhow::Result;
 use poise::serenity_prelude as serenity;
-use tracing::error;
+use tracing::{error, info, trace_span};
 
 use crate::commands::character_move::*;
 use crate::commands::ping::ping;
@@ -97,11 +97,16 @@ async fn main() -> Result<()> {
         })
         .setup(|ctx, _ready, framework| {
             Box::pin(async move {
+                info!("Starting bot setup");
+
+                info!("Registering poise builtins");
                 poise::builtins::register_globally(ctx, &framework.options().commands).await?;
 
+                info!("Initializing frame service");
                 let frame_service =
                     FrameService::try_new(WavuMoveRepository, JaroMoveMatcher).await?;
 
+                info!("Done setting up bot");
                 Ok(BotState { frame_service })
             })
         })
