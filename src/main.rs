@@ -3,7 +3,7 @@ use tracing_subscriber::util::SubscriberInitExt;
 
 use anyhow::Result;
 use poise::serenity_prelude as serenity;
-use tracing::{error, info, trace_span};
+use tracing::{error, info};
 
 use crate::commands::character_move::*;
 use crate::commands::ping::ping;
