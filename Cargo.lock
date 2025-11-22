@@ -502,6 +502,7 @@ dependencies = [
  "futures",
  "html-escape",
  "poise",
+ "regex",
  "reqwest 0.12.24",
  "rstest",
  "scraper",

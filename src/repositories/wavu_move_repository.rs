@@ -6,6 +6,7 @@ use crate::{
 
 use anyhow::Result;
 use async_trait::async_trait;
+use regex::Regex;
 use scraper::Html;
 use serde::Deserialize;
 
@@ -124,6 +125,7 @@ impl MoveTableRow {
         document
             .root_element()
             .text()
+            .map(MoveTableRow::remove_links)
             .map(|s| s.replace("* ", ""))
             .collect::<String>()
             .lines()
@@ -159,6 +161,13 @@ impl MoveTableRow {
         }
         None
     }
+
+    /// Frame data fields sometimes contain links such as "[[Eddy combos#Staples|+31a(+24)]]",
+    /// this function removes those kinds of links so we get "+31a(+24)" instead
+    fn remove_links(s: &str) -> String {
+        let re = Regex::new(r"\[\[.*?\|(.*?)\]\]").unwrap();
+        re.replace(s, "$1").into()
+    }
 }
 
 impl From<MoveTableRow> for CharacterMove {
@@ -179,9 +188,9 @@ impl From<MoveTableRow> for CharacterMove {
             recovery_frames: row.recv,
             total_frames: row.tot,
             crush: row.crush,
-            on_block: row.block,
-            on_hit: row.hit,
-            on_counter_hit: row.ch,
+            on_block: row.block.map(|s| MoveTableRow::remove_links(&s)),
+            on_hit: row.hit.map(|s| MoveTableRow::remove_links(&s)),
+            on_counter_hit: row.ch.map(|s| MoveTableRow::remove_links(&s)),
             notes: MoveTableRow::decode_bullet_list(&row.notes),
         }
     }
@@ -190,6 +199,7 @@ impl From<MoveTableRow> for CharacterMove {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use rstest::rstest;
 
     #[test]
     fn test_replace_justframe_notation() {
@@ -201,5 +211,22 @@ mod tests {
     fn test_replace_justframe_notation_no_justframe_pattern_match() {
         let fixed = MoveTableRow::fix_justframe_notation("Kazuya-f,n,d,df2");
         assert!(fixed.is_none());
+    }
+
+    #[rstest]
+    #[case("[[Eddy combos#Staples|+31a(+24)]]", "+31a(+24)")]
+    #[case("[[Asuka_combos#Staples|+22a (+12)]]", "+22a (+12)")]
+    #[case("+23a (+13)", "+23a (+13)")]
+    #[case("+2", "+2")]
+    #[case("", "")]
+    #[case("[[Asuka_combos#Staples|]]", "")]
+    #[case("[[Paul_movelist#Paul-H.CS.2|H.CS.2]] with Heat", "H.CS.2 with Heat")]
+    #[case(
+        "Hi [[Paul_movelist#Paul-H.CS.2|H.CS.2]] with Heat",
+        "Hi H.CS.2 with Heat"
+    )]
+    fn test_remove_links(#[case] with_link: &str, #[case] without_link: &str) {
+        let s = MoveTableRow::remove_links(with_link);
+        assert_eq!(without_link, s)
     }
 }
