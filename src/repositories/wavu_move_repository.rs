@@ -116,36 +116,18 @@ struct MoveTableRow {
 impl MoveTableRow {
     fn decode_bullet_list(bullet_list_html: &Option<impl AsRef<str>>) -> Vec<String> {
         let Some(html) = bullet_list_html else {
-            return vec![];
+            return Vec::new();
         };
 
         let decoded = html_escape::decode_html_entities(html);
-        let document = Html::parse_fragment(&decoded);
 
-        document
+        Html::parse_fragment(&decoded)
             .root_element()
             .text()
+            .flat_map(|s| s.lines())
             .map(MoveTableRow::remove_links)
             .map(|s| s.replace("* ", ""))
-            .collect::<String>()
-            .lines()
             .filter(|s| !s.trim().is_empty())
-            .map(|s| format!("* {s}"))
-            .collect::<Vec<String>>()
-    }
-
-    fn decode_bullet_list_remove_bullets(
-        bullet_list_html: &Option<impl AsRef<str>>,
-    ) -> Vec<String> {
-        let decoded = MoveTableRow::decode_bullet_list(bullet_list_html);
-
-        decoded
-            .into_iter()
-            .map(|s| {
-                s.strip_prefix("* ")
-                    .map(|s_without_prefix| s_without_prefix.to_string())
-                    .unwrap_or(s)
-            })
             .collect()
     }
 
@@ -178,8 +160,8 @@ impl From<MoveTableRow> for CharacterMove {
             id: fixed_id.unwrap_or(row.id),
             name: row.name,
             input: row.input,
-            alias: MoveTableRow::decode_bullet_list_remove_bullets(&row.alias),
-            alt: MoveTableRow::decode_bullet_list_remove_bullets(&row.alt),
+            alias: MoveTableRow::decode_bullet_list(&row.alias),
+            alt: MoveTableRow::decode_bullet_list(&row.alt),
             parent: row.parent,
             target: row.target,
             damage: row.damage,
