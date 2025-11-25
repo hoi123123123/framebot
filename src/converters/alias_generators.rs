@@ -1,10 +1,12 @@
+use std::borrow::Cow;
+
 use crate::tekken::character::Character;
 
 // Noone writes the first plus after a letter when referring to a move.
 // For example, d+2 is referred to as d1, and d+1+2 as d1+2
-pub fn drop_first_plus_after_letter(character: Character, move_id: &str) -> Option<String> {
+pub fn drop_first_plus_after_letter(character: Character, move_id: &str) -> Cow<'_, str> {
     if move_id.len() <= 1 {
-        return None;
+        return Cow::Borrowed(move_id);
     }
 
     // Drop the character name, alias matchers don't include the
@@ -33,24 +35,24 @@ pub fn drop_first_plus_after_letter(character: Character, move_id: &str) -> Opti
         new_alias.push(ch);
     }
 
-    Some(new_alias)
+    Cow::Owned(new_alias)
 }
 
 /// Replace f,f with ff, and f,f,f with fff
-pub fn remove_commas_from_ff_notation(s: &str) -> Option<String> {
-    let lowercased = s.to_lowercase();
+pub fn remove_commas_from_ff_notation(move_id: &str) -> Cow<'_, str> {
+    let lowercased = move_id.to_lowercase();
 
     if !lowercased.contains("f,f") {
-        return None;
+        return Cow::Borrowed(move_id);
     }
 
     let replaced_fff = lowercased.replace("f,f,f", "fff");
     let replaced_ff = replaced_fff.replace("f,f", "ff");
 
     if replaced_ff != lowercased {
-        Some(replaced_ff)
+        Cow::Owned(replaced_ff)
     } else {
-        None
+        Cow::Borrowed(move_id)
     }
 }
 
@@ -77,7 +79,7 @@ mod tests {
         #[case] expected_alias: &str,
         #[case] character: Character,
     ) {
-        let alias = drop_first_plus_after_letter(character, move_id).unwrap();
+        let alias = drop_first_plus_after_letter(character, move_id);
         assert_eq!(expected_alias, alias);
     }
 
@@ -90,7 +92,7 @@ mod tests {
     #[case("f,F+1+2,1+2", "ff+1+2,1+2")]
 
     fn test_fix_ff_notation(#[case] s: &str, #[case] expected: &str) {
-        let alias = remove_commas_from_ff_notation(s).unwrap();
+        let alias = remove_commas_from_ff_notation(s);
         assert_eq!(expected, alias);
     }
 }

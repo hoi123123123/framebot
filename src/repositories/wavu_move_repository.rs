@@ -1,3 +1,5 @@
+use std::sync::LazyLock;
+
 use crate::{
     converters::alias_generators,
     repositories::MoveRepository,
@@ -9,7 +11,6 @@ use async_trait::async_trait;
 use regex::Regex;
 use scraper::Html;
 use serde::Deserialize;
-use tap::Pipe;
 
 pub struct WavuMoveRepository;
 
@@ -45,12 +46,11 @@ impl MoveRepository for WavuMoveRepository {
 
         // Add aliases to increase the chance of finding the moves people actually intend to see
         for m in character_moves.iter_mut() {
-            if let Some(aliased) =
-                m.id.to_string()
-                    .pipe(|s| alias_generators::drop_first_plus_after_letter(character, &s))
-                    .and_then(|s| alias_generators::remove_commas_from_ff_notation(&s))
-            {
-                m.alias.push(aliased);
+            let alias = alias_generators::drop_first_plus_after_letter(character, &m.id);
+            let alias2 = alias_generators::remove_commas_from_ff_notation(&alias);
+
+            if alias2 != m.id {
+                m.alias.push(alias2.into());
             }
         }
 
@@ -118,6 +118,8 @@ struct MoveTableRow {
     notes: Option<String>,
 }
 
+static LINK_REGEX: LazyLock<Regex> = LazyLock::new(|| Regex::new(r"\[\[.*?\|(.*?)\]\]").unwrap());
+
 impl MoveTableRow {
     fn decode_bullet_list(bullet_list_html: &Option<impl AsRef<str>>) -> Vec<String> {
         let Some(html) = bullet_list_html else {
@@ -152,7 +154,7 @@ impl MoveTableRow {
     /// Frame data fields sometimes contain links such as "[[Eddy combos#Staples|+31a(+24)]]",
     /// this function removes those kinds of links so we get "+31a(+24)" instead
     fn remove_links(s: &str) -> String {
-        let re = Regex::new(r"\[\[.*?\|(.*?)\]\]").unwrap();
+        let re = &*LINK_REGEX;
         re.replace(s, "$1").into()
     }
 }
