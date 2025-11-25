@@ -9,6 +9,7 @@ use async_trait::async_trait;
 use regex::Regex;
 use scraper::Html;
 use serde::Deserialize;
+use tap::Pipe;
 
 pub struct WavuMoveRepository;
 
@@ -44,8 +45,12 @@ impl MoveRepository for WavuMoveRepository {
 
         // Add aliases to increase the chance of finding the moves people actually intend to see
         for m in character_moves.iter_mut() {
-            if let Some(alias) = alias_generators::drop_first_plus_after_letter(character, &m.id) {
-                m.alias.push(alias);
+            if let Some(aliased) =
+                m.id.to_string()
+                    .pipe(|s| alias_generators::drop_first_plus_after_letter(character, &s))
+                    .and_then(|s| alias_generators::remove_commas_from_ff_notation(&s))
+            {
+                m.alias.push(aliased);
             }
         }
 

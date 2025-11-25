@@ -36,6 +36,24 @@ pub fn drop_first_plus_after_letter(character: Character, move_id: &str) -> Opti
     Some(new_alias)
 }
 
+/// Replace f,f with ff, and f,f,f with fff
+pub fn remove_commas_from_ff_notation(s: &str) -> Option<String> {
+    let lowercased = s.to_lowercase();
+
+    if !lowercased.contains("f,f") {
+        return None;
+    }
+
+    let replaced_fff = lowercased.replace("f,f,f", "fff");
+    let replaced_ff = replaced_fff.replace("f,f", "ff");
+
+    if replaced_ff != lowercased {
+        Some(replaced_ff)
+    } else {
+        None
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -61,5 +79,18 @@ mod tests {
     ) {
         let alias = drop_first_plus_after_letter(character, move_id).unwrap();
         assert_eq!(expected_alias, alias);
+    }
+
+    #[rstest]
+    #[case("f,F+1+2", "ff+1+2")]
+    #[case("f,f,f+3", "fff+3")]
+    #[case("f,f3", "ff3")]
+    #[case("f,f,f,f,f,f", "ffffff")]
+    #[case("f,f,f,f,f,f", "ffffff")]
+    #[case("f,F+1+2,1+2", "ff+1+2,1+2")]
+
+    fn test_fix_ff_notation(#[case] s: &str, #[case] expected: &str) {
+        let alias = remove_commas_from_ff_notation(s).unwrap();
+        assert_eq!(expected, alias);
     }
 }
