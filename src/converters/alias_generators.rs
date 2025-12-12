@@ -5,7 +5,7 @@ use crate::tekken::character::Character;
 // Noone writes the first plus after a letter when referring to a move.
 // For example, d+2 is referred to as d1, and d+1+2 as d1+2
 pub fn drop_first_plus_after_letter(character: Character, move_id: &str) -> Cow<'_, str> {
-    if move_id.len() <= 1 {
+    if move_id.len() <= 1 || !move_id.contains("+") {
         return Cow::Borrowed(move_id);
     }
 
