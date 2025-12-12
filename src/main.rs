@@ -76,6 +76,7 @@ async fn main() -> Result<()> {
                 lidia(),
                 lili(),
                 nina(),
+                miaryzo(),
                 panda(),
                 paul(),
                 raven(),

@@ -33,6 +33,7 @@ pub enum Character {
     Lidia,
     Lili,
     Nina,
+    MiaryZo,
     Panda,
     Paul,
     Raven,
@@ -77,6 +78,7 @@ impl Display for Character {
             Character::Lidia => "Lidia",
             Character::Lili => "Lili",
             Character::Nina => "Nina",
+            Character::MiaryZo => "Miary Zo",
             Character::Panda => "Panda",
             Character::Paul => "Paul",
             Character::Raven => "Raven",
@@ -182,6 +184,9 @@ impl Character {
             }
             Character::Nina => {
                 "https://media.discordapp.net/attachments/1394056479169843271/1426945224894320731/nina-portrait.png?ex=68ed11cc&is=68ebc04c&hm=573fe709d7899232505d012be53af90b5f63d593331c1d8a5e8be51492ace158&=&format=webp&quality=lossless"
+            }
+            Character::MiaryZo => {
+                "https://media.discordapp.net/attachments/1394056479169843271/1449143628583669850/cmg9xoson37gn07ljubup6hwa.png?ex=693dd3ac&is=693c822c&hm=4f3210fd62774b4d2ea8fce9d44ae0f4a924e0a3bef5b71955e0f0d9d8133dc4&=&format=webp&quality=lossless"
             }
             Character::Panda => {
                 "https://media.discordapp.net/attachments/1394056479169843271/1426945224348930201/panda-portrait.png?ex=68ed11cc&is=68ebc04c&hm=3efb95de6dfc7c03fa61560eab7e2fdfb2aa685a996520640828ea9a61fdd59e&=&format=webp&quality=lossless"

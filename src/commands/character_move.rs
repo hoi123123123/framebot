@@ -373,6 +373,15 @@ pub async fn nina(
 }
 
 #[instrument(skip(ctx))]
+#[command(slash_command, prefix_command, aliases("miary", "mz"))]
+pub async fn miaryzo(
+    ctx: Context<'_>,
+    #[description = "Move inputs or move name"] query: Vec<String>,
+) -> Result<(), Error> {
+    character_command_inner(ctx, Character::MiaryZo, query).await
+}
+
+#[instrument(skip(ctx))]
 #[command(slash_command, prefix_command)]
 pub async fn panda(
     ctx: Context<'_>,

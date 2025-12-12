@@ -17,6 +17,7 @@ fn to_okizeme_name(character: Character) -> String {
     match character {
         Character::ArmorKing => "armor-king".into(),
         Character::DevilJin => "devil-jin".into(),
+        Character::MiaryZo => "miary-zo".into(),
         _ => character.to_string().to_lowercase(),
     }
 }
