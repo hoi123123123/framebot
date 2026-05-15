@@ -6,6 +6,6 @@ use anyhow::Result;
 pub mod wavu_move_repository;
 
 #[async_trait]
-pub trait MoveRepository: Send + Sync {
+pub trait MoveRepository: Send + Sync + 'static {
     async fn character_moves(&self, character: Character) -> Result<Vec<CharacterMove>>;
 }
