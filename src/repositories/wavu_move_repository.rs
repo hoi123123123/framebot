@@ -169,8 +169,7 @@ impl MoveTableRow {
     /// Frame data fields sometimes contain links such as "[[Eddy combos#Staples|+31a(+24)]]",
     /// this function removes those kinds of links so we get "+31a(+24)" instead
     fn remove_links(s: &str) -> String {
-        let re = &*LINK_REGEX;
-        re.replace(s, "$1").into()
+        LINK_REGEX.replace(s, "$1").into()
     }
 }
 
