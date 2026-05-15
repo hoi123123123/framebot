@@ -159,9 +159,9 @@ impl MoveTableRow {
     /// Returns `Some` with the fixed string if the justframe pattern was replaced,
     /// `None` otherwise
     fn fix_justframe_notation(s: &str) -> Option<String> {
-        let justframe_pattern = "${justFrame}";
-        if s.contains(justframe_pattern) {
-            return Some(s.replace(justframe_pattern, "#"));
+        const JUSTFRAME_PATTERN: &str = "${justFrame}";
+        if s.contains(JUSTFRAME_PATTERN) {
+            return Some(s.replace(JUSTFRAME_PATTERN, "#"));
         }
         None
     }
