@@ -174,8 +174,15 @@ impl MoveTableRow {
 }
 
 impl From<MoveTableRow> for CharacterMove {
-    fn from(row: MoveTableRow) -> Self {
+    fn from(mut row: MoveTableRow) -> Self {
         let fixed_id = MoveTableRow::fix_justframe_notation(&row.id);
+
+        if let Some(ref name) = row.name
+            && name.contains("dotlist")
+        {
+            let names_csv = MoveTableRow::decode_bullet_list(&row.name).join(", ");
+            row.name = Some(names_csv);
+        }
 
         CharacterMove {
             id: fixed_id.unwrap_or(row.id),
