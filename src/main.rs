@@ -104,8 +104,8 @@ async fn main() -> Result<()> {
                 poise::builtins::register_globally(ctx, &framework.options().commands).await?;
 
                 info!("Initializing frame service");
-                let frame_service =
-                    FrameService::try_new(WavuMoveRepository, JaroMoveMatcher).await?;
+                let wavu_move_repo = WavuMoveRepository::new();
+                let frame_service = FrameService::try_new(wavu_move_repo, JaroMoveMatcher).await?;
 
                 info!("Done setting up bot");
                 Ok(BotState { frame_service })

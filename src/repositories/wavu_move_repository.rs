@@ -12,13 +12,27 @@ use regex::Regex;
 use scraper::Html;
 use serde::Deserialize;
 
-pub struct WavuMoveRepository;
+pub struct WavuMoveRepository {
+    client: reqwest::Client,
+}
+
+impl Default for WavuMoveRepository {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
+impl WavuMoveRepository {
+    pub fn new() -> Self {
+        Self {
+            client: reqwest::Client::new(),
+        }
+    }
+}
 
 #[async_trait]
 impl MoveRepository for WavuMoveRepository {
     async fn character_moves(&self, character: Character) -> Result<Vec<CharacterMove>> {
-        let client = reqwest::Client::new();
-
         let params = [
             ("action", "cargoquery"),
             ("tables", "Move"),
@@ -30,7 +44,8 @@ impl MoveRepository for WavuMoveRepository {
             ("format", "json"),
         ];
 
-        let response = client
+        let response = self
+            .client
             .get(WAVU_API_URL)
             .query(&params)
             .send()
