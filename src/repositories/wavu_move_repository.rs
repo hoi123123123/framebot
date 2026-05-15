@@ -148,7 +148,7 @@ impl MoveTableRow {
             .text()
             .flat_map(|s| s.lines())
             .map(MoveTableRow::remove_links)
-            .map(|s| s.replace("* ", ""))
+            .map(|s| s.replace("* ", "").replace("*", ""))
             .filter(|s| !s.trim().is_empty())
             .collect()
     }
