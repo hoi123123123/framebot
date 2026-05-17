@@ -1,4 +1,5 @@
 use anyhow::Result;
+use tokio::sync::RwLock;
 
 use crate::{
     matchers::{CharacterMoveMatch, MoveMatcher},
@@ -8,7 +9,7 @@ use crate::{
 };
 
 pub struct FrameService<R: MoveRepository, M: MoveMatcher> {
-    store: MoveStore<R>,
+    store: RwLock<MoveStore<R>>,
     matcher: M,
 }
 
@@ -16,19 +17,29 @@ impl<R: MoveRepository, M: MoveMatcher> FrameService<R, M> {
     pub async fn try_new(move_repository: R, matcher: M) -> Result<Self> {
         let move_store = MoveStore::try_new(move_repository).await?;
         Ok(Self {
-            store: move_store,
+            store: RwLock::new(move_store),
             matcher,
         })
     }
 
-    pub fn query_move(&self, character: Character, query: &[String]) -> Option<CharacterMoveMatch> {
+    pub async fn refetch_moves(&self, move_repository: R) -> Result<()> {
+        let new_move_store = MoveStore::try_new(move_repository).await?;
+        *self.store.write().await = new_move_store;
+        Ok(())
+    }
+
+    pub async fn query_move(
+        &self,
+        character: Character,
+        query: &[String],
+    ) -> Option<CharacterMoveMatch> {
         let move_query = query
             .iter()
             .map(|q| q.trim_ascii())
             .collect::<Vec<_>>()
             .join(" ");
 
-        let moves = self.store.moves(character)?;
+        let moves = self.store.read().await.moves(character)?;
 
         let id_match = self.matcher.match_by_id(character, &move_query, &moves);
         if let Some(ref m) = id_match
@@ -100,7 +111,7 @@ mod tests {
             .unwrap();
         let query = vec!["bla".into()];
 
-        let character_move = service.query_move(Character::Paul, &query).unwrap();
+        let character_move = service.query_move(Character::Paul, &query).await.unwrap();
 
         assert_eq!(character_move.score, 1.0);
     }

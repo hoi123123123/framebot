@@ -107,7 +107,7 @@ async fn character_command_inner(
     character: Character,
     query: Vec<String>,
 ) -> Result<(), Error> {
-    let move_info = ctx.data().frame_service.query_move(character, &query);
+    let move_info = ctx.data().frame_service.query_move(character, &query).await;
     reply_with_move_info(ctx, move_info).await
 }
 

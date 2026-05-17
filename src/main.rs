@@ -1,3 +1,6 @@
+use std::sync::Arc;
+use std::time::Duration;
+
 use tracing_subscriber::layer::SubscriberExt;
 use tracing_subscriber::util::SubscriberInitExt;
 
@@ -23,7 +26,7 @@ type Error = Box<dyn std::error::Error + Send + Sync>;
 type Context<'a> = poise::Context<'a, BotState, Error>;
 
 pub struct BotState {
-    frame_service: FrameService<WavuMoveRepository, JaroMoveMatcher>,
+    frame_service: Arc<FrameService<WavuMoveRepository, JaroMoveMatcher>>,
 }
 
 #[tokio::main]
@@ -106,8 +109,32 @@ async fn main() -> Result<()> {
                 info!("Initializing frame service");
                 let wavu_move_repo = WavuMoveRepository::new();
                 let frame_service = FrameService::try_new(wavu_move_repo, JaroMoveMatcher).await?;
+                let frame_service = Arc::new(frame_service);
 
-                info!("Done setting up bot");
+                info!("Finished initializing frame service");
+
+                info!("Initializing refresh loop");
+                let frame_service_ref = frame_service.clone();
+                tokio::spawn(async move {
+                    let mut interval = tokio::time::interval(Duration::from_hours(1));
+                    interval.tick().await; // skip instant tick
+
+                    loop {
+                        interval.tick().await;
+                        info!("Refreshing moves");
+
+                        match frame_service_ref
+                            .refetch_moves(WavuMoveRepository::new())
+                            .await
+                        {
+                            Ok(_) => info!("Succesfully refreshed moves"),
+                            Err(e) => error!("Error refreshing moves: {e}"),
+                        }
+                    }
+                });
+                info!("Finsihed initializing refresh loop");
+
+                info!("Finished setting up bot");
                 Ok(BotState { frame_service })
             })
         })
