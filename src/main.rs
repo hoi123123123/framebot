@@ -71,6 +71,7 @@ async fn main() -> Result<()> {
                 kazuya(),
                 king(),
                 kuma(),
+                kunimitsu(),
                 lars(),
                 law(),
                 lee(),

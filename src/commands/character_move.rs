@@ -301,6 +301,15 @@ pub async fn kuma(
 }
 
 #[instrument(skip(ctx))]
+#[command(slash_command, prefix_command, aliases("kuni"))]
+pub async fn kunimitsu(
+    ctx: Context<'_>,
+    #[description = "Move inputs or move name"] query: Vec<String>,
+) -> Result<(), Error> {
+    character_command_inner(ctx, Character::Kunimitsu, query).await
+}
+
+#[instrument(skip(ctx))]
 #[command(slash_command, prefix_command)]
 pub async fn lars(
     ctx: Context<'_>,

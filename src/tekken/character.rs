@@ -25,6 +25,7 @@ pub enum Character {
     Kazuya,
     King,
     Kuma,
+    Kunimitsu,
     Lars,
     Law,
     Lee,
@@ -70,6 +71,7 @@ impl Display for Character {
             Character::Kazuya => "Kazuya",
             Character::King => "King",
             Character::Kuma => "Kuma",
+            Character::Kunimitsu => "Kunimitsu",
             Character::Lars => "Lars",
             Character::Law => "Law",
             Character::Lee => "Lee",
@@ -160,6 +162,9 @@ impl Character {
             }
             Character::Kuma => {
                 "https://media.discordapp.net/attachments/1394056479169843271/1426945273585864887/kuma-portrait.png?ex=68ed11d8&is=68ebc058&hm=0ff00e0111888b1359fe97f8883eb69176626ddf71c3ce18e1e4840bb43cd551&=&format=webp&quality=lossless"
+            }
+            Character::Kunimitsu => {
+                "https://media.discordapp.net/attachments/1394056479169843271/1509966067630604542/Kuni-removebg-preview.png?ex=6a1b18fc&is=6a19c77c&hm=59dafe15961f4e15fe890c0976fc14c31bb21c5d59ac96d9c28b8ff90d8340ec&=&format=webp&quality=lossless"
             }
             Character::Lars => {
                 "https://media.discordapp.net/attachments/1394056479169843271/1426945229151408170/lars-portrait.png?ex=68ed11cd&is=68ebc04d&hm=a8b4f080eb51bbbd5d6becaec134b4fab1fbbc1564bc9d72105ee8fcbac26838&=&format=webp&quality=lossless"
