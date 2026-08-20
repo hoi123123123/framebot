@@ -55,6 +55,7 @@ async fn main() -> Result<()> {
                 armorking(),
                 asuka(),
                 azucena(),
+                bob(),
                 bryan(),
                 claudio(),
                 clive(),

@@ -158,6 +158,15 @@ pub async fn azucena(
 
 #[instrument(skip(ctx))]
 #[command(slash_command, prefix_command)]
+pub async fn bob(
+    ctx: Context<'_>,
+    #[description = "Move inputs or move name"] query: Vec<String>,
+) -> Result<(), Error> {
+    character_command_inner(ctx, Character::Bob, query).await
+}
+
+#[instrument(skip(ctx))]
+#[command(slash_command, prefix_command)]
 pub async fn bryan(
     ctx: Context<'_>,
     #[description = "Move inputs or move name"] query: Vec<String>,

@@ -9,6 +9,7 @@ pub enum Character {
     ArmorKing,
     Asuka,
     Azucena,
+    Bob,
     Bryan,
     Claudio,
     Clive,
@@ -55,6 +56,7 @@ impl Display for Character {
             Character::ArmorKing => "Armor King",
             Character::Asuka => "Asuka",
             Character::Azucena => "Azucena",
+            Character::Bob => "Bob",
             Character::Bryan => "Bryan",
             Character::Claudio => "Claudio",
             Character::Clive => "Clive",
@@ -114,6 +116,9 @@ impl Character {
             }
             Character::Azucena => {
                 "https://media.discordapp.net/attachments/1394056479169843271/1426945166278922240/azucena-portrait.png?ex=68ed11bf&is=68ebc03f&hm=b8dcbcede5f777b90acf142fbafa96b0b35068e870c14e294fc3f2aeeac3c45b&=&format=webp&quality=lossless"
+            }
+            Character::Bob => {
+                "https://media.discordapp.net/attachments/1394056479169843271/1540053800306475038/image.png?ex=6a888e5e&is=6a873cde&hm=d7176708016f37eac9e8aacd6d4c6359543ed0ce0c10b2f2e67c0ed25ce6e051&=&format=webp&quality=lossless"
             }
             Character::Bryan => {
                 "https://media.discordapp.net/attachments/1394056479169843271/1426945300983185428/bryan-portrait.png?ex=68ed11df&is=68ebc05f&hm=7ba14a16899fa254e55fc1a2cf09c60ea4f1c0b7805cc3e5bf79a33297b62d38&=&format=webp&quality=lossless"
